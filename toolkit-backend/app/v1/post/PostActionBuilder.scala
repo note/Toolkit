@@ -84,7 +84,7 @@ class PostActionBuilder @Inject()(messagesApi: MessagesApi, playBodyParsers: Pla
  * controller only has to have one thing injected.
  */
 case class PostControllerComponents @Inject()(postActionBuilder: PostActionBuilder,
-                                               postResourceHandler: PostResourceHandler,
+                                              repo: PostRepository,
                                                actionBuilder: DefaultActionBuilder,
                                                parsers: PlayBodyParsers,
                                                messagesApi: MessagesApi,
@@ -101,5 +101,5 @@ class PostBaseController @Inject()(pcc: PostControllerComponents) extends BaseCo
 
   def PostAction: PostActionBuilder = pcc.postActionBuilder
 
-  def postResourceHandler: PostResourceHandler = pcc.postResourceHandler
+  def repo: PostRepository = pcc.repo
 }
