@@ -1,7 +1,7 @@
-package v1.post.repo
+package v1.tool.repo
 
 import com.google.inject.ImplementedBy
-import v1.post.Tool
+import v1.tool.Tool
 
 import scala.concurrent.Future
 

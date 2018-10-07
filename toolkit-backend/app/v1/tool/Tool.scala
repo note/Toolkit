@@ -1,4 +1,4 @@
-package v1.post
+package v1.tool
 
 import play.api.libs.json.{JsValue, Json, Writes}
 

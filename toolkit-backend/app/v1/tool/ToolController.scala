@@ -1,9 +1,9 @@
-package v1.post
+package v1.tool
 
 import javax.inject.Inject
 import play.api.libs.json.Json
 import play.api.mvc._
-import v1.post.repo.ToolRepository
+import v1.tool.repo.ToolRepository
 
 import scala.concurrent.ExecutionContext
 
