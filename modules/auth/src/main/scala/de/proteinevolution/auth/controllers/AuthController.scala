@@ -17,7 +17,7 @@ import play.api.cache.{ NamedCache, SyncCacheApi }
 import play.api.libs.json.Json
 import play.api.libs.mailer.MailerClient
 import play.api.mvc.{ Action, AnyContent, ControllerComponents }
-import reactivemongo.bson.{ BSONDateTime, BSONDocument, BSONObjectID }
+import reactivemongo.bson.{ BSONDateTime, BSONDocument }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -96,12 +96,12 @@ class AuthController @Inject()(
                         userSessions.removeUserFromCache(unregisteredUser)
 
                         // Tell the job actors to copy all jobs connected to the old user to the new user
-                        wsActorCache.get[List[ActorRef]](unregisteredUser.userID.stringify) match {
+                        wsActorCache.get[List[ActorRef]](unregisteredUser.userID) match {
                           case Some(wsActors) =>
                             val actorList: List[ActorRef] = wsActors: List[ActorRef]
-                            wsActorCache.set(loggedInUser.userID.stringify, actorList)
+                            wsActorCache.set(loggedInUser.userID, actorList)
                             actorList.foreach(_ ! ChangeSessionID(loggedInUser.sessionID.get))
-                            wsActorCache.remove(unregisteredUser.userID.stringify)
+                            wsActorCache.remove(unregisteredUser.userID)
                           case None =>
                         }
 
@@ -168,7 +168,6 @@ class AuthController @Inject()(
                   case None =>
                     // Create the database entry.
                     val newUser = signUpFormUser.copy(
-                      userID = BSONObjectID.generate(),
                       sessionID = None,
                       userToken =
                         Some(UserToken(tokenType = User.REGISTEREDUSER, eMail = Some(signUpFormUser.getUserData.eMail)))

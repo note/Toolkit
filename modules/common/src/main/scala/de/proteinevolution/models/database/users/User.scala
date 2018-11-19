@@ -8,7 +8,7 @@ import reactivemongo.bson._
 import de.proteinevolution.models.util.ZonedDateTimeHelper
 
 case class User(
-    userID: BSONObjectID = BSONObjectID.generate(), // ID of the User
+    userID: String = BSONObjectID.generate().stringify, // ID of the User
     sessionID: Option[BSONObjectID] = None, // Session ID
     sessionData: List[SessionData] = List.empty, // Session data separately from sid
     connected: Boolean = true,
@@ -44,7 +44,7 @@ case class User(
   def hasNotLoggedIn: Boolean = accountType == 3
 
   override def toString: String = {
-    s"""userID: ${userID.stringify}
+    s"""userID: $userID
        |sessionID: ${sessionID match {
          case Some(sid) => sid.stringify
          case None      => "not logged in"
@@ -97,7 +97,7 @@ object User {
   implicit object UserWrites extends Writes[User] {
     val dtf = "dd.MM.yyyy HH:mm:ss"
     def writes(user: User): JsObject = Json.obj(
-      ID                 -> user.userID.stringify,
+      ID                 -> user.userID,
       SESSIONID          -> user.sessionID.map(_.stringify),
       SESSIONDATA        -> user.sessionData,
       CONNECTED          -> user.connected,
@@ -119,7 +119,7 @@ object User {
   implicit object Reader extends BSONDocumentReader[User] {
     override def read(bson: BSONDocument): User =
       User(
-        userID = bson.getAs[BSONObjectID](IDDB).get,
+        userID = bson.getAs[BSONObjectID](IDDB).get.stringify,
         sessionID = bson.getAs[BSONObjectID](SESSIONID),
         sessionData = bson.getAs[List[SessionData]](SESSIONDATA).getOrElse(List.empty),
         connected = bson.getAs[Boolean](CONNECTED).getOrElse(false),
@@ -138,7 +138,7 @@ object User {
   implicit object Writer extends BSONDocumentWriter[User] {
     override def write(user: User): BSONDocument =
       BSONDocument(
-        IDDB          -> user.userID,
+        IDDB          -> BSONObjectID.parse(user.userID).getOrElse(BSONObjectID.generate()),
         SESSIONID     -> user.sessionID,
         SESSIONDATA   -> user.sessionData,
         CONNECTED     -> user.connected,

@@ -23,8 +23,8 @@ case class IPConfig(
 
 object IPConfig {
   // Standard computation scoring unit
-  final val sessionsMax
-    : Int                           = Int.MaxValue - 1 // TODO we may need to limit the amount of sessions, but at the same time we need to reset them again - so a good limit has to be found
+  // TODO we may need to limit the amount of sessions, but at the same time we need to reset them again - so a good limit has to be found
+  final val sessionsMax    : Int    = Int.MaxValue - 1
   final val scoreMaxDefault: Int    = 1000
   final val scoreIgnoreRequest: Int = -1
 

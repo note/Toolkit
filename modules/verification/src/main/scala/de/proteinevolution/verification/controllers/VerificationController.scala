@@ -118,7 +118,7 @@ final class VerificationController @Inject()(
                               val eMail = PasswordChangedMail(modifiedUser, environment2, env)
                               eMail.send
                               // Force Log Out on all connected users.
-                              (wsActorCache.get(modifiedUser.userID.stringify): Option[List[ActorRef]]) match {
+                              (wsActorCache.get(modifiedUser.userID): Option[List[ActorRef]]) match {
                                 case Some(webSocketActors) =>
                                   webSocketActors.foreach(_ ! LogOut)
                                 case None =>

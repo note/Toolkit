@@ -103,7 +103,6 @@ class UserSessions @Inject()(
       case None =>
         // Create a new user as there is no user with this sessionID
         val user = User(
-          userID = BSONObjectID.generate(),
           sessionID = Some(sessionID),
           sessionData = List(newSessionData),
           dateCreated = Some(ZonedDateTime.now),
